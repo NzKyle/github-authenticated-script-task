@@ -1,0 +1,36 @@
+{
+  "manifestVersion": 1,
+  "id": "github-authenticated-script",
+  "name": "GitHub Authenticated Script",
+  "version": "0.1.2",
+  "publisher": "NzKyle",
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "description": "A script task that launches with an authenticated GitHub Cli session created.",
+  "categories": [
+    "Azure Pipelines"
+  ],
+  "icons": {
+    "default": "images/logo.png"
+  },
+  "files": [
+    {
+      "path": "."
+    }
+  ],
+  "contributions": [
+    {
+      "id": "github-authenticated-script",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "githubauthenticatedscript"
+      }
+    }
+  ]
+}
