@@ -1,8 +1,8 @@
 import { Utility } from './Utility';
-import tl = require("azure-pipelines-task-lib/task");
+import * as tl from "azure-pipelines-task-lib/task";
 
 export class ScriptTypeFactory {
-    public static getSriptType(): ScriptType {
+    public static getScriptType(): ScriptType {
         let scriptType: string = tl.getInput("scriptType", true);
         let scriptLocation: string = tl.getInput("scriptLocation", true);
         if (!(['inlinescript', 'scriptpath'].find((acceptedValue) => { return scriptLocation.toLowerCase() === acceptedValue; }))) {

@@ -1,58 +1,21 @@
-import tl = require("azure-pipelines-task-lib/task");
-import {IExecSyncResult} from "azure-pipelines-task-lib/toolrunner";
+import * as tl from "azure-pipelines-task-lib/task"
 import * as fs from "node:fs";
-import path from "node:path";
+import * as path from "node:path";
 import * as os from "node:os";
 
 export class Utility {
 
     private static getGithubEndPointToken(githubEndpoint: string): string {
-        const githubEndpointObject = tl.getEndpointAuthorization(githubEndpoint, false);
-        let githubEndpointToken: string = null;
-
-        if (!!githubEndpointObject) {
-            tl.debug("Endpoint scheme: " + githubEndpointObject.scheme);
-
-            if (githubEndpointObject.scheme === 'PersonalAccessToken') {
-                githubEndpointToken = githubEndpointObject.parameters.accessToken
-            } else if (githubEndpointObject.scheme === 'OAuth') {
-                // scheme: 'OAuth'
-                githubEndpointToken = githubEndpointObject.parameters.AccessToken
-            } else if (githubEndpointObject.scheme === 'Token') {
-                // scheme: 'Token'
-                githubEndpointToken = githubEndpointObject.parameters.AccessToken
-            } else if (githubEndpointObject.scheme) {
-                throw new Error(tl.loc("InvalidEndpointAuthScheme", githubEndpointObject.scheme));
-            }
-        }
-
-        if (!githubEndpointToken) {
-            throw new Error(tl.loc("InvalidGitHubEndpoint", githubEndpoint));
-        }
-
-        return githubEndpointToken;
+        return tl.getEndpointAuthorizationParameter(githubEndpoint, 'AccessToken', false);
     }
 
     public static logoutGhCli() {
-        Utility.throwIfError(tl.execSync("gh auth logout", null));
+            process.env["GH_TOKEN"] = "";
     }
 
     public static loginGhCli(githubEndpoint: string) {
-
-        let token = this.getGithubEndPointToken(githubEndpoint);
-
-        Utility.throwIfError(tl.execSync("echo " + token + " | gh auth login --with-token", null));
-        
-    }
-
-    public static throwIfError(resultOfToolExecution: IExecSyncResult, errormsg?: string): void {
-        if (resultOfToolExecution.code != 0) {
-            tl.error("Error Code: [" + resultOfToolExecution.code + "]");
-            if (errormsg) {
-                tl.error("Error: " + errormsg);
-            }
-            throw resultOfToolExecution;
-        }
+        process.env["GH_TOKEN"] = this.getGithubEndPointToken(githubEndpoint);
+        tl.execSync("gh", ["auth", "status"])
     }
 
     public static async getScriptPath(scriptLocation: string, fileExtensions: string[]): Promise<string> {
@@ -65,7 +28,7 @@ export class Utility {
         }
         let tempDirectory = tl.getVariable('Agent.TempDirectory') || os.tmpdir();
         let inlineScript: string = tl.getInput("inlineScript", true);
-        let scriptPath: string = path.join(tempDirectory, `azureclitaskscript${new Date().getTime()}.${fileExtensions[0]}`);
+        let scriptPath: string = path.join(tempDirectory, `githubauthenticatedscript${new Date().getTime()}.${fileExtensions[0]}`);
         await Utility.createFile(scriptPath, inlineScript);
         return scriptPath;
     }
@@ -81,8 +44,6 @@ export class Utility {
                 throw new Error(tl.loc('JS_InvalidErrorActionPreference', powerShellErrorActionPreference));
         }
 
-        // Write the script to disk.
-        tl.assertAgent('2.115.0');
         let tempDirectory = tl.getVariable('Agent.TempDirectory') || os.tmpdir();
 
         let contents: string[] = [];
@@ -91,10 +52,9 @@ export class Utility {
         let filePath: string = tl.getPathInput("scriptPath", false, false);
         if (scriptLocation.toLowerCase() === 'inlinescript') {
             let inlineScript: string = tl.getInput("inlineScript", true);
-            filePath = path.join(tempDirectory, `azureclitaskscript${new Date().getTime()}_inlinescript.${fileExtensions[0]}`);
+            filePath = path.join(tempDirectory, `githubauthenticatedscript${new Date().getTime()}_inlinescript.${fileExtensions[0]}`);
             await Utility.createFile(filePath, inlineScript);
-        }
-        else{
+        } else {
             if (!Utility.checkIfFileExists(filePath, fileExtensions)) {
                 throw new Error(tl.loc('JS_InvalidFilePath', filePath));
             }
@@ -116,21 +76,16 @@ export class Utility {
             contents.push(`}`);
         }
 
-        let scriptPath: string = path.join(tempDirectory, `azureclitaskscript${new Date().getTime()}.${fileExtensions[0]}`);
-        await Utility.createFile(scriptPath, '\ufeff' + contents.join(os.EOL), { encoding: 'utf8' });
+        let scriptPath: string = path.join(tempDirectory, `githubauthenticatedscript${new Date().getTime()}.${fileExtensions[0]}`);
+        await Utility.createFile(scriptPath, '\ufeff' + contents.join(os.EOL), {encoding: 'utf8'});
         return scriptPath;
-    }
-
-    public static checkIfAzurePythonSdkIsInstalled() {
-        return !!tl.which("az", false);
     }
 
     public static async createFile(filePath: string, data: string, options?: any): Promise<void> {
         try {
             fs.writeFileSync(filePath, data, options);
-        }
-        catch (err) {
-            Utility.deleteFile(filePath);
+        } catch (err) {
+            await Utility.deleteFile(filePath);
             throw err;
         }
     }
@@ -141,19 +96,15 @@ export class Utility {
                 return true;
             }
         });
-        if (matchingFiles.length > 0) {
-            return true;
-        }
-        return false;
+        return matchingFiles.length > 0;
     }
 
     public static async deleteFile(filePath: string): Promise<void> {
         if (fs.existsSync(filePath)) {
             try {
-                //delete the publishsetting file created earlier
+                //delete the publish settings file created earlier
                 fs.unlinkSync(filePath);
-            }
-            catch (err) {
+            } catch (err) {
                 //error while deleting should not result in task failure
                 console.error(err.toString());
             }

@@ -2,13 +2,18 @@
   "name": "github-authenticated-script-task",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "githubauthenticatedscript/ghauthtask.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "postbuild": "npm run package-extension -- --rev-version",
+    "clean": "find ./githubauthenticatedscript/ -name '*.js' -not -path \"./githubauthenticatedscript/node_modules/*\" -exec rm -r {} +",
+    "build:clean": "npm run clean && tsc -b --verbose",
+    "package": "tfx extension create --manifests vss-extension.json",
+    "publish": "tfx extension publish --manifests vss-extension.json",
+    "test": "env TEST_REPORT_FILENAME=test-results.xml jest --verbose"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "NzKyle",
+  "license": "MIT",
   "dependencies": {
     "azure-pipelines-task-lib": "^4.17.3"
   },

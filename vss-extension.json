@@ -2,25 +2,64 @@
   "manifestVersion": 1,
   "id": "github-authenticated-script",
   "name": "GitHub Authenticated Script",
-  "version": "0.1.2",
+  "version": "0.1.31",
   "publisher": "NzKyle",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
     }
   ],
-  "description": "A script task that launches with an authenticated GitHub Cli session created.",
+  "description": "A script task that sets the GH_TOKEN environment variable - allowing for the gh cli to be used",
   "categories": [
     "Azure Pipelines"
+  ],
+  "tags": [
+    "service-connection",
+    "authenticated",
+    "github",
+    "gh",
+    "cli",
+    "batch",
+    "bash",
+    "powershell",
+    "linux",
+    "windows"
   ],
   "icons": {
     "default": "images/logo.png"
   },
   "files": [
     {
-      "path": "."
+      "path": "githubauthenticatedscript"
+    },
+    {
+      "path": "docs",
+      "addressable": true
     }
   ],
+  "content": {
+    "details": {
+      "path": "docs/Overview.md"
+    },
+    "license": {
+      "path": "LICENSE"
+    }
+  },
+  "links": {
+    "home": {
+      "uri": "https://github.com/NzKyle/github-authenticated-script-task"
+    },
+    "repository": {
+      "uri": "https://github.com/NzKyle/github-authenticated-script-task"
+    },
+    "issues": {
+      "uri": "https://github.com/NzKyle/github-authenticated-script-task/issues"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/NzKyle/github-authenticated-script-task"
+  },
   "contributions": [
     {
       "id": "github-authenticated-script",
@@ -31,6 +70,11 @@
       "properties": {
         "name": "githubauthenticatedscript"
       }
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "docs/gf-auth-status-pipeline.png"
     }
   ]
 }

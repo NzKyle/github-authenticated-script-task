@@ -82,3 +82,6 @@ fabric.properties
 node_modules
 
 *.vsix
+/githubauthenticatedscript/ghauthtask.js
+/githubauthenticatedscript/operations/ScriptType.js
+/githubauthenticatedscript/operations/Utility.js
