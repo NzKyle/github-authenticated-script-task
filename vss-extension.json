@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "github-authenticated-script",
   "name": "GitHub Authenticated Script",
-  "version": "0.1.31",
+  "version": "0.1.32",
   "publisher": "NzKyle",
   "targets": [
     {
@@ -74,7 +74,7 @@
   ],
   "screenshots": [
     {
-      "path": "docs/gf-auth-status-pipeline.png"
+      "path": "docs/gh-auth-status-pipeline.png"
     }
   ]
 }

@@ -52,4 +52,4 @@ This task is based heavily on Microsoft's [AzureCLI@2 task](https://learn.micros
 ```
 The task will run a `gh auth status` once the `GH_TOKEN` environment variable is set - and you will see log output similar to this:
 
-![gf-auth-status-pipeline.png](gf-auth-status-pipeline.png)
+![A screenshot showing the output of `gh auth status` within the task](/docs/gh-auth-status-pipeline.png)

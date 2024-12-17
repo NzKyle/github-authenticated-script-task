@@ -4,10 +4,9 @@
   "description": "",
   "main": "githubauthenticatedscript/ghauthtask.js",
   "scripts": {
-    "postbuild": "npm run package-extension -- --rev-version",
     "clean": "find ./githubauthenticatedscript/ -name '*.js' -not -path \"./githubauthenticatedscript/node_modules/*\" -exec rm -r {} +",
     "build:clean": "npm run clean && tsc -b --verbose",
-    "package": "tfx extension create --manifests vss-extension.json",
+    "package": "tfx extension create --manifests vss-extension.json --rev-version",
     "publish": "tfx extension publish --manifests vss-extension.json",
     "test": "env TEST_REPORT_FILENAME=test-results.xml jest --verbose"
   },
